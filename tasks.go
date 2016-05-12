@@ -9,29 +9,32 @@ import (
 )
 
 
-
+//参数
 type TaskParameter interface{};
 
+//执行的方法
 type TaskHanlder interface {};
 
+//等待任务执行完成的后续任务
 type ContinueWithHandler func(TaskResult);
 
+//返回的参数类型
 type TaskResult struct {
 	Result interface{}
 	Error error
 }
-
+//一个任务
 type Task struct {
 	wait *sync.WaitGroup
 	handler reflect.Value
 	params []reflect.Value
-	Result TaskResult
+	Result TaskResult	//任务执行完成的返回结果
 	once sync.Once
-	IsCompleted bool
+	IsCompleted bool	//表示任务是否执行完成
 	continueWith *list.List
 	delay time.Duration
 }
-
+//新建一个任务
 func NewTask(handler TaskHanlder,params ...TaskParameter) *Task {
 
 	handlerValue := reflect.ValueOf(handler);
